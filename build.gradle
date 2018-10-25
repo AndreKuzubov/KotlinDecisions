@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version '1.2.71'
+    
 }
 
 group 'groupid'
@@ -8,9 +9,16 @@ version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
+
 repositories {
     mavenCentral()
+    jcenter()
+    maven {
+        url "https://maven.google.com"
+    }
 }
+
+
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
@@ -21,11 +29,6 @@ dependencies {
 //  JakeWharton/RxRelay
     compile 'com.jakewharton.rxrelay2:rxrelay:2.1.0'
 
-//    Dagger 2
-    compile 'com.google.dagger:dagger:2.x'
-    kapt 'com.google.dagger:dagger-compiler:2.x'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.x'
-
 // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
 
@@ -34,8 +37,17 @@ dependencies {
     testImplementation 'com.squareup.okhttp3:mockwebserver:3.11.0'
 
 
+    //    Dagger 2
+    compile 'com.google.dagger:dagger:2.11'
+    kapt 'com.google.dagger:dagger-compiler:2.11'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
+
+//    Moxy
+    compile 'com.arello-mobile:moxy:1.5.5'
+    kapt 'com.arello-mobile:moxy-compiler:1.5.5'
+
     //Cicerone
-    compile 'ru.terrakok.cicerone:cicerone:X.X.X'
+    compile 'ru.terrakok.cicerone:cicerone:4.0.2'
 
 }
 
