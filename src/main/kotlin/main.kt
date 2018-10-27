@@ -5,7 +5,7 @@ import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
 
-val stringState = BehaviorRelay.createDefault<String>("323")
+private val stringState = BehaviorRelay.createDefault<String>("323")
 
 
 fun main(arg: Array<String>) {
