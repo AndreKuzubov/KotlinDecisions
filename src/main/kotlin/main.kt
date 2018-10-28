@@ -44,9 +44,9 @@ fun main(arg: Array<String>) {
 //            .subscribe()
 
 
-    println("main thread sleep  thread: " + Thread.currentThread().id.toString())
+    println("rx.streams.main thread sleep  thread: " + Thread.currentThread().id.toString())
     Thread.sleep(60000)
-    println("finish main thread")
+    println("finish rx.streams.main thread")
 
 }
 

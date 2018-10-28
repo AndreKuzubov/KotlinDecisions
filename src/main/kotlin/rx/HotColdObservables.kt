@@ -1,3 +1,5 @@
+package rx
+
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -28,7 +30,7 @@ private fun coldObservable(): Observable<Long> {
 }
 
 fun main(arg: Array<String>) {
-    println("main thread: ${Thread.currentThread().id}")
+    println("rx.streams.main thread: ${Thread.currentThread().id}")
 
 
     val obs = coldObservable()

@@ -1,3 +1,5 @@
+package rx
+
 import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.disposables.CompositeDisposable
 import java.util.concurrent.TimeUnit
