@@ -2,7 +2,6 @@ package rx
 
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -76,33 +75,32 @@ fun example1() {
 
 fun exampleOncePolling() {
 
+    val scheduler = Schedulers.newThread()
 
-    var id: String? = null
+    var polling = false
 
-    val d = Observable.zip(
-            Observable.just(10000, 1234, 3432),
-            Observable.interval(2, TimeUnit.SECONDS),
-            BiFunction<Int, Long, Int> { it, _ -> it })
-            .flatMapSingle {
-                while (id != null)
-                    Thread.sleep(100)
-                startServerJob(it.toLong())
-            }
-            .flatMapSingle { jobId ->
-                id = jobId
-                getJobStatus(jobId)
-                        .repeatWhen { it.delay(1, TimeUnit.SECONDS) }
-                        .takeUntil {
-                            it != "IN_PROGRESS"
-                        }
-                        .lastElement()
-                        .toSingle()
-                        .doFinally {
-                            println("do finaly")
-                            id = null
-                        }
-            }
-            .observeOn(Schedulers.computation())
+    val d =
+            Observable.just(10000, 1234, 3432)
+                    .flatMapSingle {
+                        while (polling)
+                            Thread.yield()
+                        polling = true
+                        startServerJob(it.toLong())
+                    }
+                    .subscribeOn(scheduler)
+                    .flatMapSingle { jobId ->
+                        getJobStatus(jobId)
+                                .repeatWhen { it.delay(1, TimeUnit.SECONDS) }
+                                .takeUntil {
+                                    it != "IN_PROGRESS"
+                                }
+                                .lastElement()
+                                .toSingle()
+                                .doFinally {
+                                    polling = false
+                                }
+                    }
+                    .observeOn(Schedulers.computation())
 
     val disposable = d.subscribe({
         println("subsctribe ${it}")
