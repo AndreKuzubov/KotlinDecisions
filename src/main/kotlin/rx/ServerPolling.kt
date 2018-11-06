@@ -2,6 +2,7 @@ package rx
 
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -42,7 +43,8 @@ fun getJobStatus(jobId: String): Single<String> {
 
 }
 
-fun main(arg: Array<String>) {
+
+fun example1() {
     val d = Observable
             .just(10000)
             .subscribeOn(Schedulers.io())
@@ -69,9 +71,52 @@ fun main(arg: Array<String>) {
     }, {
         println("onComplete")
     })
+}
 
 
+fun exampleOncePolling() {
 
+
+    var id: String? = null
+
+    val d = Observable.zip(
+            Observable.just(10000, 1234, 3432),
+            Observable.interval(2, TimeUnit.SECONDS),
+            BiFunction<Int, Long, Int> { it, _ -> it })
+            .flatMapSingle {
+                while (id != null)
+                    Thread.sleep(100)
+                startServerJob(it.toLong())
+            }
+            .flatMapSingle { jobId ->
+                id = jobId
+                getJobStatus(jobId)
+                        .repeatWhen { it.delay(1, TimeUnit.SECONDS) }
+                        .takeUntil {
+                            it != "IN_PROGRESS"
+                        }
+                        .lastElement()
+                        .toSingle()
+                        .doFinally {
+                            println("do finaly")
+                            id = null
+                        }
+            }
+            .observeOn(Schedulers.computation())
+
+    val disposable = d.subscribe({
+        println("subsctribe ${it}")
+    }, {
+        println("subsctribe error ${it.message}")
+        it.printStackTrace()
+    }, {
+        println("onComplete")
+    })
+}
+
+fun main(arg: Array<String>) {
+
+    exampleOncePolling()
 
     while (true)
         Thread.sleep(1000)
