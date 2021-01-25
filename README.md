@@ -12,6 +12,6 @@
 
 ## License
 ```
-Copyright (c) 2018 Andrey Kuzubov
+Copyright (c) 2019 Andrey Kuzubov
 ```
   
