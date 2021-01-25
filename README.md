@@ -9,3 +9,9 @@
   * Retrofit 
   * OkHttp
   * Cicerone
+
+## License
+```
+Copyright (c) 2018 Andrey Kuzubov
+```
+  
